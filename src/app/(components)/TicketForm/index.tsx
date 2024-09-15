@@ -16,6 +16,7 @@ const TicketForm = (props: Props) => {
   };
 
   const [formData, setFormData] = useState(startingTicketData);
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -31,7 +32,21 @@ const TicketForm = (props: Props) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await fetch("/api/tickets", {
+      method: "POST",
+      body: JSON.stringify({ formData }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to create Ticket");
+    }
+    router.refresh();
+    router.push("/");
     console.log("hi");
   };
 
