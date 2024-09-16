@@ -6,9 +6,9 @@ export async function DELETE(req: any, { params }: any) {
     const { id } = params;
 
     await Ticket.findByIdAndDelete(id);
-    NextResponse.json({ message: "Ticket Deleted" }, { status: 200 });
+    return NextResponse.json({ message: "Ticket Deleted" }, { status: 200 });
   } catch (error) {
-    NextResponse.json(
+    return NextResponse.json(
       {
         message: "Error",
       },
