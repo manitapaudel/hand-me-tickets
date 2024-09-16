@@ -1,11 +1,19 @@
 import React from "react";
 
-type Props = {};
+import { getColor } from "@/app/(utils)";
 
-const StatusDisplay = (props: Props) => {
+type Props = {
+  status: string;
+};
+
+const StatusDisplay = ({ status }: Props) => {
   return (
-    <div className="inline-block rounded-full px-2 py-1 text-xs font-semibold text-gray-700 bg-green-200">
-      done
+    <div
+      className={`inline-block rounded-full px-2 py-1 text-xs font-semibold text-gray-700 ${getColor(
+        status
+      )}`}
+    >
+      {status}
     </div>
   );
 };
