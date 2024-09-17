@@ -22,15 +22,13 @@ const getTicketById = async (id: string) => {
 const TicketPage = async ({ params }: TicketPageProps) => {
   const EDITMODE = params.id === "new" ? false : true;
 
-  let updateTicketData = {};
+  let updateTicketData = {
+    _id: "new",
+  };
 
   if (EDITMODE) {
     const fetchedTicketData = await getTicketById(params.id);
     updateTicketData = fetchedTicketData.foundTicket;
-  } else {
-    updateTicketData = {
-      _id: "new",
-    };
   }
 
   return (

@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { TicketType } from "@/app/(utils)/types";
 
 type Props = {
-  ticket: TicketType | { _id: string } | {};
+  ticket: TicketType | { _id: string };
 };
 
 const TicketForm = ({ ticket }: Props) => {
@@ -20,7 +20,8 @@ const TicketForm = ({ ticket }: Props) => {
     category: "Hardware Problem",
   };
 
-  if (EDITMODE) {
+  // Type narrowing; the 'in' operator checks if the object has a title property
+  if ("title" in ticket) {
     startingTicketData["title"] = ticket.title;
     startingTicketData["description"] = ticket.description;
     startingTicketData["priority"] = ticket.priority;
@@ -76,7 +77,6 @@ const TicketForm = ({ ticket }: Props) => {
     }
     router.refresh();
     router.push("/");
-    console.log("hi");
   };
 
   return (
