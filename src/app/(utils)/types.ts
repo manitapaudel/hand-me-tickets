@@ -10,3 +10,7 @@ export type TicketType = {
   updatedAt: string;
   __v: number;
 };
+
+export type ParamsType = {
+  id: string;
+};

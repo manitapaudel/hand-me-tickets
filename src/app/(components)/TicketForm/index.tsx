@@ -3,9 +3,14 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-type Props = {};
+import { TicketType } from "@/app/(utils)/types";
 
-const TicketForm = (props: Props) => {
+type Props = {
+  ticket: TicketType | { _id: string } | {};
+};
+
+const TicketForm = ({ ticket }: Props) => {
+  const EDITMODE = ticket._id === "new" ? false : true;
   const startingTicketData = {
     title: "",
     description: "",
@@ -14,6 +19,15 @@ const TicketForm = (props: Props) => {
     status: "not started",
     category: "Hardware Problem",
   };
+
+  if (EDITMODE) {
+    startingTicketData["title"] = ticket.title;
+    startingTicketData["description"] = ticket.description;
+    startingTicketData["priority"] = ticket.priority;
+    startingTicketData["progress"] = ticket.progress;
+    startingTicketData["status"] = ticket.status;
+    startingTicketData["category"] = ticket.category;
+  }
 
   const [formData, setFormData] = useState(startingTicketData);
   const router = useRouter();
@@ -34,16 +48,31 @@ const TicketForm = (props: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("/api/tickets", {
-      method: "POST",
-      body: JSON.stringify({ formData }),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
 
-    if (!res.ok) {
-      throw new Error("Failed to create Ticket");
+    if (EDITMODE) {
+      const res = await fetch(`/api/tickets/${ticket._id}`, {
+        method: "PUT",
+        body: JSON.stringify({ formData }),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to Update Ticket");
+      }
+    } else {
+      const res = await fetch("/api/tickets", {
+        method: "POST",
+        body: JSON.stringify({ formData }),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to Create Ticket");
+      }
     }
     router.refresh();
     router.push("/");
@@ -57,7 +86,7 @@ const TicketForm = (props: Props) => {
         method="post"
         onSubmit={handleSubmit}
       >
-        <h3>Create Your Ticket</h3>
+        <h3>{EDITMODE ? "Update" : "Create"} Your Ticket</h3>
         <label htmlFor="title">Title</label>
         <input
           type="text"
@@ -164,7 +193,11 @@ const TicketForm = (props: Props) => {
           <option value="started">Started</option>
           <option value="done">Done</option>
         </select>
-        <input type="submit" className="btn" value="Create Ticket" />
+        <input
+          type="submit"
+          className="btn"
+          value={`${EDITMODE ? "Update" : "Create"} Ticket`}
+        />
       </form>
     </div>
   );
